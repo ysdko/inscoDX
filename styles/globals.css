@@ -25,6 +25,10 @@ a {
 
 }
 
+.box-bottom{
+  height: 200px;
+}
+
 .box-score-main{
   text-shadow:
     1px 0 0 plum,
