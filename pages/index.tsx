@@ -15,7 +15,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-      <div className="container">
+      <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-5">
             <Score/>

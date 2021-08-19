@@ -14,3 +14,52 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.box{
+  background-color: black!important;
+  color: white!important;
+}
+
+.box-upper{
+  height: 300px;
+
+}
+
+.box-score-main{
+  text-shadow:
+    1px 0 0 plum,
+    0 1px 0 plum,
+    -1px 0 0 plum,
+    0 -1px 0 plum!important
+}
+
+.box-score-standard{
+  padding-left: 2em;
+}
+
+.box-score-sub{
+  color: #FF7C00;
+  background: -webkit-linear-gradient(top, #FFB76B 0%, #FFA73D 50%, #FF7C00 51%, #FF7F04 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.score-header{
+  display: flex;
+  flex-direction: column;
+}
+
+.score-main{
+  font-size: 5.2em;
+  text-align: justify;
+  text-align-last: justify;
+  text-justify: inter-character;
+}
+
+.score-char{
+  text-shadow:
+    1px 0 0 orange,
+    0 1px 0 orange,
+    -1px 0 0 orange,
+    0 -1px 0 orange!important
+}

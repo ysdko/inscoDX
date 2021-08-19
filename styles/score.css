@@ -1,0 +1,22 @@
+.box-score{
+    text-shadow:
+      1px 0 0 plum,
+      0 1px 0 plum,
+      -1px 0 0 plum,
+      0 -1px 0 plum!important
+  }
+  
+  .score-main{
+    font-size: 5.2em;
+    text-align: justify;
+    text-align-last: justify;
+    text-justify: inter-character;
+  }
+  
+  .score-char{
+    text-shadow:
+      1px 0 0 orange,
+      0 1px 0 orange,
+      -1px 0 0 orange,
+      0 -1px 0 orange!important
+  }
