@@ -24,7 +24,7 @@ const Home: NextPage = () => {
             <Chart/>
           </div>
         </div>
-          <div className="row justify-content-center">
+          <div className="row justify-content-center mt-2">
             <div className="col-5">
               <Discribe/>
             </div>

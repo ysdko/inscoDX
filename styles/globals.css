@@ -63,3 +63,10 @@ a {
     -1px 0 0 orange,
     0 -1px 0 orange!important
 }
+
+.text-underline {
+  background-image: linear-gradient(to right, rgba(255,255,255,0) 0%, #3388dd 30%, #3388dd 70%, rgba(255,255,255,0) 100%);
+	background-repeat: no-repeat;
+	background-size: 100% 10%;
+	background-position: bottom;
+}
