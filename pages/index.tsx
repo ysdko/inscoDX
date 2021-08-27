@@ -18,7 +18,7 @@ import TitleText from "../component/title";
 import Image from "next/image";
 import Link from 'next/Link';
 import { parseJSON } from 'jquery';
-import { start } from '@popperjs/core';
+//import { start } from '@popperjs/core';
 // import Button from 'react-bootstrap/Button';
 
 
