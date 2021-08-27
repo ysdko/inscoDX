@@ -1,20 +1,38 @@
-import React from "react";
+import React from 'react'
+import { 
+    useEffect,
+    useState,
+} from 'react';
 
-function nowTime(props:any){
-
-  return(
-    <>
-      <div className="card bg-blue h-50">
-      <div className="card-body" >
-      <h5 className="card-title text-center blue"></h5>
-        <p className="card-text">音量上げて</p>
-      </div>
-      <div className="card-footer text-muted">
-        何時何分
-      </div>
-      </div>
-    </>
-  )
+const arrangeNumber = (num:number): string => {
+    return num > 9 ? `${num}` : `0${num}`
 }
 
-export default nowTime;
+const NowTime = () => {
+  const [second, setSecond] = useState(0)
+  const [start, setStart] = useState(false)// 消してほしいとこ
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if(start){// 書き換えてほしい
+        setSecond(s => s + 1)
+      }
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [start]);// 書き換えてほしい
+    return (
+        <>
+            <div className="card text-center">
+              <div className="card-body ">
+                {
+                  start// 書き換えてほしい
+                  ?  <h2>{`${arrangeNumber(Math.floor(second/60))}:${arrangeNumber(second%60)}`}</h2>
+                  : <button className="btn btn-light btn-lg" onClick={() => setStart(true)}>start</button>      
+                }
+              </div>
+            </div>
+        </>
+    )
+}
+
+export default NowTime

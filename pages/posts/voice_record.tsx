@@ -79,11 +79,6 @@ const record = () => {
 
   };
 
-  // 録音停止
-  const handleStop = () => {
-    audioRef.current.stop();
-    console.log(file)
-  };
   // バックエンドに音声ファイルを送信
   const handleSubmit = () => {
     console.log(file)
@@ -122,9 +117,9 @@ const record = () => {
   return (
     <div>
       <button onClick={handleStart}>録音</button>
-      <button onClick={handleStop} disabled={audioState}>
+      {/* <button onClick={handleStop} disabled={audioState}>
         ストップ
-      </button>
+      </button> */}
       <button onClick={handleSubmit} disabled={file.length === 0}>
         送信
       </button>

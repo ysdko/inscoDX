@@ -16,10 +16,11 @@ import calm from "../public/calm.jpg";
 import move from "../public/buddha.jpg";
 import TitleText from "../component/title";
 import Image from "next/image";
-import Link from 'next/Link';
 import { parseJSON } from 'jquery';
-import { start } from '@popperjs/core';
+//import { start } from '@popperjs/core';
 // import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+
 
 
 function Capture() {
@@ -36,11 +37,15 @@ function Capture() {
   const [endFlag, setEnd] = useState(false);
   const [titleQuestion, setTitleQuestion] = useState<string>("");
   const nowIndex = useRef([0, 0]);
+  const faceApiFlag = useRef<boolean>(false);
+  const resultParams = useRef<Array<Array<number>>>([[0.5, 0]]);
   const setStartFlag = () => {
     setStart(true);
     setTitleQuestion(questionsList[nowIndex.current[1]]);
+    faceApiFlag.current = true;
     if(nowIndex.current[1] === questionsList.length - 1)
       setEndFlag();
+    handleStart();
   }
   const setEndFlag = () => {
     setEnd(true);
@@ -51,7 +56,6 @@ function Capture() {
     if(nowIndex.current[1] === questionsList.length - 1)
       setEndFlag();
   }
-
   if(startFlag !== true){
     if(questionsList.length === 0)
       nowIndex.current[0] = 0;
@@ -97,7 +101,7 @@ function Capture() {
   const moveRemoveCount = useRef<number>(0);
   const moveImage = useRef<StaticImageData>(calm);
   const setMoveImage = (nowCoodinate:number) => {
-    const threshold = moveXCoodinate.current - nowCoodinate >= 0 
+    const threshold = moveXCoodinate.current - nowCoodinate >= 0
     ? moveXCoodinate.current - nowCoodinate : - (moveXCoodinate.current - nowCoodinate);
     if (threshold > 0.05) {
       moveCount.current += 1;
@@ -105,9 +109,9 @@ function Capture() {
     }
     else {
       moveCount.current = 0;
-      moveRemoveCount.current += 1; 
+      moveRemoveCount.current += 1;
     }
-  
+
     if (moveCount.current >= 2) {
       moveImage.current = move;
       if (moveCount.current % 3 === 0)
@@ -138,17 +142,112 @@ function Capture() {
         setMoveImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
+        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
+        resultParams.current[0][1] += 1;
         updateScores(detectionsWithExpressions[0].expressions);
       }
     }
   };
 
-  useEffect(() => {
+  // ------------------------------------------
+  // ---------音声認識-------------------------
+  // -----------------------------------------
+
+  const [file, setFile] = useState([]);
+  const [audioState, setAudioState] = useState(true);
+  const audioRef = useRef<any>();
+
+  const handleSuccess = (stream : any) => {
+    
+    // レコーディングのインスタンスを作成
+    audioRef.current = new MediaRecorder(stream, {
+      mimeType: "video/webm;codecs=vp9",
+    });
+    // 音声データを貯める場所
+    var chunks : any = [];
+    // 録音が終わった後のデータをまとめる
+    audioRef.current.addEventListener("dataavailable", (ele : any) => {
+      if (ele.data.size > 0) {
+        chunks.push(ele.data);
+      }
+
+      const iconPram = new FormData()
+      const blob = new Blob(chunks,  {type: 'video/webm'})
+      const blob_file = new File([blob], "file1.webm", { type: 'video/webm'})
+      iconPram.append('file', blob_file)
+      console.log("nakami")
+      console.log(blob)
+      axios
+        .post(
+          'http://localhost:5000/upload',
+          iconPram,
+        ).then((response)=>{
+          console.log(response.data);
+        });
+
+    });
+    // 録音を開始したら状態を変える
+    audioRef.current.addEventListener("start", () => setAudioState(false));
+    // 録音がストップしたらchunkを空にして、録音状態を更新
+    audioRef.current.addEventListener("stop", () => {
+      setAudioState(true);
+      chunks = [];
+    });
+  };
+
+  // 録音停止
+  const handleStop = () => {
+    audioRef.current.stop();
+  };
+
+  const hancleError = () => {
+    alert("エラーです。");
+  };
+
+  const handleStart = () => {
+    
+
     setInterval(() => {
+      // audioRef.current.state = "recording"
+      audioRef.current.start();
+      console.log(audioRef.current.state)
+      setTimeout(() => {
+        console.log(audioRef.current.state)
+        audioRef.current.stop();
+      }, 4000);
+    }, 5000);
+  }
+
+  // ------------------------------------------
+  // ---------音声認識　終了--------------------
+  // ------------------------------------------
+  let faceApiId:any = useRef(); 
+  if(faceApiFlag.current){
+    faceApiFlag.current = false;
+    faceApiId.current = setInterval(() => {
       faceDetectHandler();
       console.log('実行が完了しました');
-      }, 1500)
+    }, 1500)
+  }
+
+  useEffect(() => {
+
+    //音声認識の実行
+    //audioのみtrue
+    navigator.getUserMedia(
+      {
+        audio: true,
+        // video: true,
+      },
+      handleSuccess,
+      hancleError
+    )
   }, [])
+
+  const recordEnd = () => {
+    handleStop();
+    clearInterval(faceApiId.current);
+  }
   
   //　アドバイス関連
   const advicesList = useRef<Array<string>>([]);
@@ -195,7 +294,7 @@ function Capture() {
             <div className="card-body">
               <NowTime />
               <Process />
-              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} />
+              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} resultParams={resultParams} recordEnd={recordEnd}/>
               </div>
             </div>
           </div>

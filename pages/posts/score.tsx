@@ -4,6 +4,7 @@ import Score from "../../component/score";
 import Chart from "../../component/chart";
 import Discribe from '../../component/discribe';
 import Report from '../../component/report';
+import background from "background.gif"
 
 const Home: NextPage = () => {
   return (
@@ -14,8 +15,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-      <div className="container mt-5">
+      <main className="score-bg">
+      <div className="container py-5">
         <div className="row justify-content-center">
           <div className="col-5">
             <Score/>

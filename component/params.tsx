@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef} from "react";
 import Image from "next/image";
+
 import advice from "./advice";
 
 
@@ -16,7 +17,7 @@ function params(props:any){
         </div>
         <div className="col-6">
           <h5 className="text-center"> 姿勢 </h5>
-          <Image src={props.shakeImage} height={150} width={150}></Image>
+          //<Image src={props.shakeImage} height={150} width={150}></Image>
         </div>
       </div>
       <div className="card-footer text-muted">
