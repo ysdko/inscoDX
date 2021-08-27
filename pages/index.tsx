@@ -15,6 +15,12 @@ import sad from "../public/sad.png";
 import calm from "../public/calm.jpg";
 import move from "../public/buddha.jpg";
 import TitleText from "../component/title";
+import Image from "next/image";
+import { parseJSON } from 'jquery';
+//import { start } from '@popperjs/core';
+// import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+
 
 
 function Capture() {
@@ -39,6 +45,7 @@ function Capture() {
     faceApiFlag.current = true;
     if(nowIndex.current[1] === questionsList.length - 1)
       setEndFlag();
+    handleStart();
   }
   const setEndFlag = () => {
     setEnd(true);
@@ -135,12 +142,84 @@ function Capture() {
         setMoveImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
-        ResultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
-        ResultParams.current[0][1] += 1;
+        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
+        resultParams.current[0][1] += 1;
         updateScores(detectionsWithExpressions[0].expressions);
       }
     }
   };
+
+  // ------------------------------------------
+  // ---------音声認識-------------------------
+  // -----------------------------------------
+
+  const [file, setFile] = useState([]);
+  const [audioState, setAudioState] = useState(true);
+  const audioRef = useRef<any>();
+
+  const handleSuccess = (stream : any) => {
+    
+    // レコーディングのインスタンスを作成
+    audioRef.current = new MediaRecorder(stream, {
+      mimeType: "video/webm;codecs=vp9",
+    });
+    // 音声データを貯める場所
+    var chunks : any = [];
+    // 録音が終わった後のデータをまとめる
+    audioRef.current.addEventListener("dataavailable", (ele : any) => {
+      // console.log("starttt")
+      if (ele.data.size > 0) {
+        chunks.push(ele.data);
+        console.log("test2")
+        console.log(file)
+      }
+      // 音声データをセット
+      setFile(chunks);
+      const test = file;
+      // console.log("test:"+test)
+
+      const iconPram = new FormData()
+      // const blob = new Blob(chunks[0])
+      const blob = chunks[0]
+      iconPram.append('file', blob)
+      console.log("nakami")
+      chunks = [];
+      console.log(blob)
+      
+  
+      axios
+        .post(
+          'http://localhost:5000/upload',
+          iconPram,
+        ).then((response)=>{
+          console.log(response.data);
+        });
+
+    });
+    // 録音を開始したら状態を変える
+    audioRef.current.addEventListener("start", () => setAudioState(false));
+    // 録音がストップしたらchunkを空にして、録音状態を更新
+    audioRef.current.addEventListener("stop", () => {
+      setAudioState(true);
+      chunks = [];
+      console.log("test!")
+      console.log(file)
+    });
+  };
+
+  const hancleError = () => {
+    alert("エラーです。");
+  };
+
+  const handleStart = () => {
+    
+    audioRef.current.start(3000);
+    console.log("test")
+  }
+
+  // ------------------------------------------
+  // ---------音声認識　終了--------------------
+  // ------------------------------------------
 
   if(faceApiFlag.current){
     faceApiFlag.current = false;
@@ -150,6 +229,25 @@ function Capture() {
     }, 1500)
   }
 
+  useEffect(() => {
+    // // 表情認識の実行？
+    // setInterval(() => {
+    //   faceDetectHandler();
+    //   console.log('実行が完了しました');
+    //   }, 1500)
+
+    //音声認識の実行
+    //audioのみtrue
+    navigator.getUserMedia(
+      {
+        audio: true,
+        video: true,
+      },
+      handleSuccess,
+      hancleError
+    )
+  }, [])
+  
   //　アドバイス関連
   const advicesList = useRef<Array<string>>([]);
   const pushAdvice = (newAdvice:string) => {
