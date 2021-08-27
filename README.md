@@ -7,8 +7,12 @@
 
 
 ## 環境構築と実行方法
-
-
+1. 必要なモジュールをインストールする。
+'yarn add'
+2. 以下のリンクからface-apiで使用するweightをダウンロードして/public/modelsというディレクトリに保存する。
+<https://github.com/justadudewhohacks/face-api.js.git>
+3. 実行する
+'yarn dev'
 
 ## 開発方法
 
