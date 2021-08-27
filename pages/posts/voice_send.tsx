@@ -17,10 +17,11 @@ const IconUpload: React.FC = () => {
     const iconPram = new FormData()
     if (!userIconFormData) return
 
-    iconPram.append('user[icon]', userIconFormData)
+    iconPram.append('file', userIconFormData)
+    console.log(userIconFormData)
     axios
       .post(
-        'https://api/update',
+        'http://127.0.0.1:5000/upload',
         iconPram,
         {
           headers: {
@@ -28,24 +29,25 @@ const IconUpload: React.FC = () => {
           },
         }
       )
+    
   }
 
-  return (          
+  return (        
+    <>  
      <form>
        <p>アイコンアップロード</p>
        <input
          type="file"
-         accept="image/*,.png,.jpg,.jpeg,.gif"
          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSetImage(e)}
        />
-       <button>
-         text="変更する"
-         variant="contained"
-         color="primary"
-         type="button"
+       <button
          onClick={handleSubmitProfileIcon}
-         {/* disabled={userIconPreview === undefined} */}
+>アップロード
          </button>
     </form>
+    <p></p>
+    </>
   )
 }
+
+export default IconUpload

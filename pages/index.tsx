@@ -18,7 +18,7 @@ function Capture() {
   }
   const webcamRef = useRef<Webcam>(null);
   const [scores, updateScores] = useState<object>(initScores);
-  let detectionsWithExpressions : object;
+  let detectionsWithExpressions : any;
 
   const loadModels = async () => {
     await Promise.all([
