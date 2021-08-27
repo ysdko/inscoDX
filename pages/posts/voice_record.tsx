@@ -72,7 +72,7 @@ const record = () => {
   const handleStart = () => {
     
     audioRef.current.start(3000);
-    console.log("testttttt")
+    console.log("test");
 
     // audioRef.current.stop();
     // function alertMsg(){
@@ -86,11 +86,6 @@ const record = () => {
   };
   // setInterval(handleStart,3000)
 
-  // 録音停止
-  const handleStop = () => {
-    audioRef.current.stop();
-    console.log(file)
-  };
   // バックエンドに音声ファイルを送信
   const handleSubmit = () => {
     console.log(file)

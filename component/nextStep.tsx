@@ -16,6 +16,7 @@ function nowTime(props:any){
   }
   else{ 
     text = "END";
+    setFunc = props.recordEnd;
   }
         
   return(

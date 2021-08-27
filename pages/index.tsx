@@ -207,6 +207,12 @@ function Capture() {
     });
   };
 
+  // 録音停止
+  const handleStop = () => {
+    audioRef.current.stop();
+    console.log(file)
+  };
+
   const hancleError = () => {
     alert("エラーです。");
   };
@@ -220,10 +226,10 @@ function Capture() {
   // ------------------------------------------
   // ---------音声認識　終了--------------------
   // ------------------------------------------
-
+  let faceApiId:any = useRef(); 
   if(faceApiFlag.current){
     faceApiFlag.current = false;
-    setInterval(() => {
+    faceApiId.current = setInterval(() => {
       faceDetectHandler();
       console.log('実行が完了しました');
     }, 1500)
@@ -247,6 +253,11 @@ function Capture() {
       hancleError
     )
   }, [])
+
+  const recordEnd = () => {
+    handleStop();
+    clearInterval(faceApiId.current);
+  }
   
   //　アドバイス関連
   const advicesList = useRef<Array<string>>([]);
@@ -293,7 +304,7 @@ function Capture() {
             <div className="card-body">
               <NowTime />
               <Process />
-              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} resultParams={resultParams} />
+              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} resultParams={resultParams} recordEnd={recordEnd}/>
               </div>
             </div>
           </div>
