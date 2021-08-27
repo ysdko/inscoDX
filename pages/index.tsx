@@ -15,11 +15,6 @@ import sad from "../public/sad.png";
 import calm from "../public/calm.jpg";
 import move from "../public/buddha.jpg";
 import TitleText from "../component/title";
-import Image from "next/image";
-import Link from 'next/Link';
-import { parseJSON } from 'jquery';
-import { start } from '@popperjs/core';
-// import Button from 'react-bootstrap/Button';
 
 
 function Capture() {
@@ -36,9 +31,12 @@ function Capture() {
   const [endFlag, setEnd] = useState(false);
   const [titleQuestion, setTitleQuestion] = useState<string>("");
   const nowIndex = useRef([0, 0]);
+  const faceApiFlag = useRef<boolean>(false);
+  const resultParams = useRef<Array<Array<number>>>([[0.5, 0]]);
   const setStartFlag = () => {
     setStart(true);
     setTitleQuestion(questionsList[nowIndex.current[1]]);
+    faceApiFlag.current = true;
     if(nowIndex.current[1] === questionsList.length - 1)
       setEndFlag();
   }
@@ -51,7 +49,6 @@ function Capture() {
     if(nowIndex.current[1] === questionsList.length - 1)
       setEndFlag();
   }
-
   if(startFlag !== true){
     if(questionsList.length === 0)
       nowIndex.current[0] = 0;
@@ -97,7 +94,7 @@ function Capture() {
   const moveRemoveCount = useRef<number>(0);
   const moveImage = useRef<StaticImageData>(calm);
   const setMoveImage = (nowCoodinate:number) => {
-    const threshold = moveXCoodinate.current - nowCoodinate >= 0 
+    const threshold = moveXCoodinate.current - nowCoodinate >= 0
     ? moveXCoodinate.current - nowCoodinate : - (moveXCoodinate.current - nowCoodinate);
     if (threshold > 0.05) {
       moveCount.current += 1;
@@ -105,9 +102,9 @@ function Capture() {
     }
     else {
       moveCount.current = 0;
-      moveRemoveCount.current += 1; 
+      moveRemoveCount.current += 1;
     }
-  
+
     if (moveCount.current >= 2) {
       moveImage.current = move;
       if (moveCount.current % 3 === 0)
@@ -138,18 +135,21 @@ function Capture() {
         setMoveImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
+        ResultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
+        ResultParams.current[0][1] += 1;
         updateScores(detectionsWithExpressions[0].expressions);
       }
     }
   };
 
-  useEffect(() => {
+  if(faceApiFlag.current){
+    faceApiFlag.current = false;
     setInterval(() => {
       faceDetectHandler();
       console.log('実行が完了しました');
-      }, 1500)
-  }, [])
-  
+    }, 1500)
+  }
+
   //　アドバイス関連
   const advicesList = useRef<Array<string>>([]);
   const pushAdvice = (newAdvice:string) => {
@@ -195,7 +195,7 @@ function Capture() {
             <div className="card-body">
               <NowTime />
               <Process />
-              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} />
+              <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} resultParams={resultParams} />
               </div>
             </div>
           </div>
