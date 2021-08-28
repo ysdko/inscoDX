@@ -46,7 +46,7 @@ function params(props:any){
           <p className="text-center">{text}</p>
           <Image src={props.faceImage.img} height={150} width={150}></Image>
         </div>
-        <div className="col-6" style={{background: "#777"}}>
+        <div className="col-6 pt-1" style={{background: "#777"}}>
           <h4 className="text-center"> 姿勢 </h4>
           <p className="text-center">{textAttitude}</p>
           <Image src={props.attitudeImage.img} height={150} width={150}></Image>

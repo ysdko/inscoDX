@@ -24,8 +24,8 @@ const vc = (value:number | string) => {
 
 const Home: NextPage = () => {
   const router = useRouter()
-  const [username, setName] = useState("")
-  const [score, setScore] = useState("72")
+  const [username, setName] = useState("");
+  const [score, setScore] = useState("72");
 
   const handleSubmit = useCallback(() => {
     let username = prompt("名前を記入してください")
@@ -50,26 +50,19 @@ const Home: NextPage = () => {
   }, [score])
 
   useEffect(() => {
-    const rate_1 = 1
-    const rate_2 = 1
-    const rate_3 = 1
-    const rate_4 = 1
-    const rate_5 = 1
+    const rate_1 = 20;
+    const rate_2 = 20;
+    const rate_3 = 2/5;
+    const rate_4 = 2/5;
+    const rate_5 = 2/5;
 
-    const list_rate = [
-      rate_1,
-      rate_2,
-      rate_3,
-      rate_4,
-      rate_5
-    ]
     const [
       facial_expression,
       attitude,
       voice_energy,
       speaking_speed,
       voice_stability
-    ] = Object.values(router.query);
+    ] = Object.values(router.query)
 
     setScore(() => {
       return String(
