@@ -21,9 +21,9 @@ function point(props:any){
   return(
     <>
       <div className="card text-center">
-        <div className="card-body mt-1">
-          <h4 className="mb-3"> 加点・減点 </h4>
-          <h1 className="mb-3"> {sign + value.toString() + " 点"} </h1>
+        <div className="card-body mt-1" style={{background: "#000"}}>
+          <h4 className="mb-3" style={{color: "#fff"}}> 加点・減点 </h4>
+          <h1 className="mb-3" style={{color: "#fff"}}> {sign + value.toString() + " 点"} </h1>
           <div className="progress">
             <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} style={{width: percent + "%"}}></div>
           </div>

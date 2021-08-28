@@ -40,7 +40,9 @@ function Capture() {
   const [titleQuestion, setTitleQuestion] = useState<string>("");
   const nowIndex = useRef([0, 0]);
   const faceApiFlag = useRef<boolean>(false);
-  const resultParams = useRef<Array<Array<number>>>([[0.5, 0]]);
+  const sumAttitude = useRef(0);
+  if(sumAttitude.current > 1) sumAttitude.current = 1;
+  const resultParams = useRef<Array<Array<number>>>([[0.5, 0], [0, 0], [25, 0], [25, 0], [25, 0]]);
   const setStartFlag = () => {
     setStart(true);
     setTitleQuestion(questionsList[nowIndex.current[1]]);
@@ -84,6 +86,7 @@ function Capture() {
     if (nextScores.sad >  0.2){
       faceImage.current = {value:"BAD", img:bad};
       point.current -= 0.05;
+
     }
     else if (nextScores.happy > 0.3){
       faceImage.current = {value:"GREAT", img:great};
@@ -100,14 +103,13 @@ function Capture() {
     else
       adviceGiveCounter.current = 0;
   
-    if (adviceGiveCounter.current >= 3){
+    if (adviceGiveCounter.current >= 2){
       pushAdvice("もっと笑顔に！");
       adviceGiveCounter.current = 0;
     }
   }
   const moveXCoodinate = useRef<number>(0.0);
   const moveCount = useRef<number>(0);
-  const moveRemoveCount = useRef<number>(0);
   const attitudeImage = useRef<object>({value:"init", img:goodAttitude});
   const firstResFlag = useRef<boolean>(true);
   const setAttitudeImage = (nowCoodinate:number) => {
@@ -122,17 +124,23 @@ function Capture() {
       else
         attitudeImage.current = {value:"BAD", img:badAttitude};
         point.current -= 0.08;
+        resultParams.current[1][0] -= 0.08;
+        if(resultParams.current[1][0] < 0) resultParams.current[1][0] = 0;
     }
     else {
       moveCount.current = 0;
       attitudeImage.current = {value:"GOOD", img:goodAttitude};
       point.current += 0.05;
+      resultParams.current[1][0] += 0.08;
+      if(resultParams.current[1][0] < 0) resultParams.current[1][0] = 0;
     }
 
     if (moveCount.current >= 2) {
       if (moveCount.current % 3 === 0)
         pushAdvice("ゆらゆらしない！");
       point.current -= 0.02;
+      resultParams.current[1][0] -= 0.02;
+      if(resultParams.current[1][0] < 0) resultParams.current[1][0] = 0;
     }
     moveXCoodinate.current = nowCoodinate;
   }
@@ -154,8 +162,9 @@ function Capture() {
         setAttitudeImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
-        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
+        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy + 0.5 * detectionsWithExpressions[0].expressions.normal;
         resultParams.current[0][1] += 1;
+        resultParams.current[1][1] += 1;
         updateScores(detectionsWithExpressions[0].expressions);
       }
     }
@@ -168,6 +177,8 @@ function Capture() {
   const [file, setFile] = useState([]);
   const [audioState, setAudioState] = useState(true);
   const audioRef = useRef<any>();
+  const voice_data = useRef<any>([]);
+  const voice_ave = useRef<number>(0);
 
   const handleSuccess = (stream : any) => {
     
@@ -191,10 +202,19 @@ function Capture() {
       console.log(blob)
       axios
         .post(
-          'http://9c9e-115-124-136-81.ngrok.io/upload',
+          'http://localhost:5000/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);
+          
+          voice_data.current = response.data
+          resultParams.current[2][0] += voice_data.current["energy"];
+          resultParams.current[3][0] += voice_data.current["calm"];
+          resultParams.current[4][0] += voice_data.current["joy"];
+          resultParams.current[2][1] += 1;
+          resultParams.current[3][1] += 1;
+          resultParams.current[4][1] += 1;
+
         });
 
     });
@@ -281,19 +301,22 @@ function Capture() {
         </div>
       </div>
 
-      <div className="container-fluid mt-3">
+      <div className="container-fluid" style={{background: "#000"}}>
         <div className="row">
           <div className="col-md-3 col-12">
-            <div className="card h-100 border border-5 rounded-3">
-              <div className="card-body">
+            <div className="card border border-5 rounded-3 mt-3 border-warning">
+              <div className="card-body" style={{background: "#777"}}>
                 <Point point={point} />
                 <Params faceImage={faceImage.current} attitudeImage={attitudeImage.current} />
                 <Voice />
+                <div>リアルタイム落ち着き{voice_data.current["calm"]}</div>
+                <div>平均落ち着き{voice_ave.current}</div>
+                {/* <Voice enrgty={voice_data.current}/> */}
               </div>
             </div>
           </div>
           <div className="col-md-6 col-12">
-            <div className="card card-body border border-5 rounded-pill">
+            <div className="card card-body border border-5 rounded-pill mt-3 border-danger">
               <TitleText titleQuestion={titleQuestion} nowIndex={nowIndex} startFlag={startFlag} />
             </div>
             <div className="mt-3">
@@ -301,8 +324,8 @@ function Capture() {
             </div>
           </div>
           <div className="col-md-3 col-12">
-            <div className="card h-100 border border-5 rouded-3">
-            <div className="card-body">
+            <div className="card border border-5 rouded-3 mt-3 border-warning">
+            <div className="card-body" style={{background: "#777"}}>
               <NowTime startFlag={startFlag} />
               <Advice advicesList={advicesList} />
               <Process nowIndex={nowIndex} questionsList={questionsList} />
