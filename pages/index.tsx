@@ -162,7 +162,7 @@ function Capture() {
         setAttitudeImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
-        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy + 0.5 * detectionsWithExpressions[0].expressions.normal;
+        resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy + 0.5 * detectionsWithExpressions[0].expressions.neutral;
         resultParams.current[0][1] += 1;
         resultParams.current[1][1] += 1;
         updateScores(detectionsWithExpressions[0].expressions);
@@ -202,7 +202,7 @@ function Capture() {
       console.log(blob)
       axios
         .post(
-          'http://localhost:5000/upload',
+          'http://7c94-115-124-136-81.ngrok.io/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);
@@ -308,10 +308,7 @@ function Capture() {
               <div className="card-body" style={{background: "#777"}}>
                 <Point point={point} />
                 <Params faceImage={faceImage.current} attitudeImage={attitudeImage.current} />
-                <Voice />
-                <div>リアルタイム落ち着き{voice_data.current["calm"]}</div>
-                <div>平均落ち着き{voice_ave.current}</div>
-                {/* <Voice enrgty={voice_data.current}/> */}
+                <Voice calm={voice_data.current["calm"]} energy={voice_data.current["energy"]}/>
               </div>
             </div>
           </div>

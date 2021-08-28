@@ -24,8 +24,8 @@ const vc = (value:number | string) => {
 
 const Home: NextPage = () => {
   const router = useRouter()
-  const [username, setName] = useState("")
-  const [score, setScore] = useState("72")
+  const [username, setName] = useState("");
+  const [score, setScore] = useState("72");
 
   const handleSubmit = useCallback(() => {
     let username = prompt("名前を記入してください")
@@ -50,11 +50,11 @@ const Home: NextPage = () => {
   }, [score])
 
   useEffect(() => {
-    const rate_1 = 1
-    const rate_2 = 1
-    const rate_3 = 1
-    const rate_4 = 1
-    const rate_5 = 1
+    const rate_1 = 20;
+    const rate_2 = 20;
+    const rate_3 = 2/5;
+    const rate_4 = 2/5;
+    const rate_5 = 2/5;
     const {
       facial_expression,
       attitude,
@@ -65,12 +65,11 @@ const Home: NextPage = () => {
     console.log(vc(facial_expression))
 
     setScore(() => {
-      //  facial_expression * rate_1 + 
-      //  attitude * rate_2 + 
-      //  voice_energy * rate_3 +
-      //  10 * rate_4 + 
-      //  voice_stability * rate_5
-      return String(72.393)
+      return String(facial_expression * rate_1 + 
+        attitude * rate_2 + 
+       voice_energy * rate_3 +
+       10 * rate_4 + 
+       voice_stability * rate_5)
     })
   }, [score]);
 
