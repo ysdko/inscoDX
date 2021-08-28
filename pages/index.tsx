@@ -168,6 +168,10 @@ function Capture() {
   const [file, setFile] = useState([]);
   const [audioState, setAudioState] = useState(true);
   const audioRef = useRef<any>();
+  const voice_data = useRef<any>([]);
+  const voice_count = useRef<number>(0)
+  const voice_sum = useRef<number>(0)
+  const voice_ave = useRef<number>(0)
 
   const handleSuccess = (stream : any) => {
     
@@ -191,10 +195,18 @@ function Capture() {
       console.log(blob)
       axios
         .post(
-          'http://9c9e-115-124-136-81.ngrok.io/upload',
+          'http://localhost:5000/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);
+          
+          voice_data.current = response.data
+          voice_count.current += 1
+          voice_sum.current += voice_data.current["calm"]
+          voice_ave.current = voice_sum.current/voice_count.current
+
+          console.log(voice_data.current["calm"])
+
         });
 
     });
@@ -288,7 +300,10 @@ function Capture() {
               <div className="card-body">
                 <Point point={point} />
                 <Params faceImage={faceImage.current} attitudeImage={attitudeImage.current} />
-                <Voice />
+                <div>test</div>
+                <div>リアルタイム落ち着き{voice_data.current["calm"]}</div>
+                <div>平均落ち着き{voice_ave.current}</div>
+                {/* <Voice enrgty={voice_data.current}/> */}
               </div>
             </div>
           </div>
