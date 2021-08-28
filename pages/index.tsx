@@ -179,26 +179,16 @@ function Capture() {
     var chunks : any = [];
     // 録音が終わった後のデータをまとめる
     audioRef.current.addEventListener("dataavailable", (ele : any) => {
-      // console.log("starttt")
       if (ele.data.size > 0) {
         chunks.push(ele.data);
-        console.log("test2")
-        console.log(file)
       }
-      // 音声データをセット
-      setFile(chunks);
-      const test = file;
-      // console.log("test:"+test)
 
       const iconPram = new FormData()
-      // const blob = new Blob(chunks[0])
-      const blob = chunks[0]
-      iconPram.append('file', blob)
+      const blob = new Blob(chunks,  {type: 'video/webm'})
+      const blob_file = new File([blob], "file1.webm", { type: 'video/webm'})
+      iconPram.append('file', blob_file)
       console.log("nakami")
-      chunks = [];
       console.log(blob)
-      
-  
       axios
         .post(
           'http://9c9e-115-124-136-81.ngrok.io/upload',
@@ -214,15 +204,12 @@ function Capture() {
     audioRef.current.addEventListener("stop", () => {
       setAudioState(true);
       chunks = [];
-      console.log("test!")
-      console.log(file)
     });
   };
 
   // 録音停止
   const handleStop = () => {
     audioRef.current.stop();
-    console.log(file)
   };
 
   const hancleError = () => {
@@ -231,12 +218,14 @@ function Capture() {
 
   const handleStart = () => {
     setInterval(() => {
+      // audioRef.current.state = "recording"
       audioRef.current.start();
+      console.log(audioRef.current.state)
       setTimeout(() => {
+        console.log(audioRef.current.state)
         audioRef.current.stop();
-        console.log("Execution 0.5sec"); // Execution 0.5sec
-      }, 3000);
-    }, 6000);
+      }, 4000);
+    }, 5000);
   }
 
   // ------------------------------------------
@@ -252,18 +241,13 @@ function Capture() {
   }
 
   useEffect(() => {
-    // // 表情認識の実行？
-    // setInterval(() => {
-    //   faceDetectHandler();
-    //   console.log('実行が完了しました');
-    //   }, 1500)
 
     //音声認識の実行
     //audioのみtrue
     navigator.getUserMedia(
       {
         audio: true,
-        video: true,
+        // video: true,
       },
       handleSuccess,
       hancleError

@@ -29,26 +29,24 @@ const record = () => {
     var chunks : any = [];
     // 録音が終わった後のデータをまとめる
     audioRef.current.addEventListener("dataavailable", (ele : any) => {
+      // chunks = [];
       // console.log("starttt")
       if (ele.data.size > 0) {
         chunks.push(ele.data);
-        console.log("test2")
-        console.log(file)
       }
       // 音声データをセット
-      setFile(chunks);
-      const test = file;
-      // console.log("test:"+test)
+      // setFile(chunks);
 
+      //録音ボタンおしてリクエスト送る場合はコメントアウト
       const iconPram = new FormData()
-      // const blob = new Blob(chunks[0])
-      const blob = chunks[0]
-      iconPram.append('file', blob)
+      const blob = new Blob(chunks,  {type: 'video/webm'})
+      const file = new File([blob], "file1.webm", { type: 'video/webm'})
+      // const blob = chunks[0]
+      iconPram.append('file', file)
       console.log("nakami")
       chunks = [];
       console.log(blob)
       
-  
       axios
         .post(
           'http://localhost:5000/upload',
@@ -70,21 +68,16 @@ const record = () => {
   };
   // 録音開始
   const handleStart = () => {
-    
-    audioRef.current.start(3000);
-    console.log("test");
-
-    // audioRef.current.stop();
-    // function alertMsg(){
-    //   console.log("3秒経過しました");
-    // }
-    
-    // await setTimeout(alertMsg, 10000);
-    // audioRef.current.stop();
-    // console.log(audioRef.current)
+    // audioRef.current.start();
+    //録音ボタンおしてリクエスト送る場合はコメントアウト
+    setInterval(() => {
+    audioRef.current.start();
+    setTimeout(() => {
+      audioRef.current.stop();
+    }, 5000);
+  }, 5000);
 
   };
-  // setInterval(handleStart,3000)
 
   // バックエンドに音声ファイルを送信
   const handleSubmit = () => {
@@ -100,18 +93,6 @@ const record = () => {
       ).then((response)=>{
         console.log(response.data);
       });
-
-    // axios
-    //   .get('/hello')
-    //   .then((response)=>{
-    //     console.log(response);
-    //   });
-    // async () => {
-    //   const res = await fetch('http://127.0.0.1:5000/hello');
-    //   const data = await res.json();
-    //   console.log(data)
-  
-    // }
   };
   const handleRemove = () => {
     setAudioState(true);
@@ -136,9 +117,9 @@ const record = () => {
   return (
     <div>
       <button onClick={handleStart}>録音</button>
-      <button onClick={handleStop} disabled={audioState}>
+      {/* <button onClick={handleStop} disabled={audioState}>
         ストップ
-      </button>
+      </button> */}
       <button onClick={handleSubmit} disabled={file.length === 0}>
         送信
       </button>
