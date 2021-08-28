@@ -8,26 +8,27 @@ const arrangeNumber = (num:number): string => {
     return num > 9 ? `${num}` : `0${num}`
 }
 
-const NowTime = () => {
-  const [second, setSecond] = useState(0)
-  const [start, setStart] = useState(false)// 消してほしいとこ
+const NowTime = (props:any) => {
+  const [second, setSecond] = useState(0);
+  // const [start, setStart] = useState(false)// 消してほしいとこ
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if(start){// 書き換えてほしい
+      if(props.startFlag){// 書き換えてほしい
         setSecond(s => s + 1)
       }
     }, 1000)
     return () => clearInterval(interval)
-  }, [start]);// 書き換えてほしい
+  }, [props.startFlag]);// 書き換えてほしい
     return (
         <>
             <div className="card text-center">
-              <div className="card-body ">
+              <div className="card-body mt-1">
+                <h4> 経過時間 </h4>
                 {
-                  start// 書き換えてほしい
-                  ?  <h2>{`${arrangeNumber(Math.floor(second/60))}:${arrangeNumber(second%60)}`}</h2>
-                  : <button className="btn btn-light btn-lg" onClick={() => setStart(true)}>start</button>      
+                  props.startFlag// 書き換えてほしい
+                  ?　<h1>{`${arrangeNumber(Math.floor(second/60))}:${arrangeNumber(second%60)}`}</h1>
+                  :　<h1>{"00:00"}</h1>
                 }
               </div>
             </div>
