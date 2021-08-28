@@ -13,7 +13,7 @@ function titleText(props:any){
         
   return(
     <>
-      <h4>{titleText}</h4>
+      <h2 className="text-center">{titleText}</h2>
     </>
   )
 }

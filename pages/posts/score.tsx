@@ -5,14 +5,17 @@ import Chart from "../../component/chart";
 import Discribe from '../../component/discribe';
 import Report from '../../component/report';
 import background from "background.gif"
-import { useCallback, useState } from 'react'; 
+import { useCallback, useState, useEffect } from 'react'; 
 import ScoreNav from '../../component/scoreNav';
+import { useRouter } from "next/router"
 
 const Home: NextPage = () => {
+  const router = useRouter()
   const [username, setName] = useState("")
   const [score, setScore] = useState("")
 
   const handleSubmit = useCallback(() => {
+    let username = prompt("名前を記入してください")
     const url = "https://inscodx.herokuapp.com/score"
     const config = {
       method: "POST",
@@ -27,20 +30,35 @@ const Home: NextPage = () => {
     }
     fetch(url, config)
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data => {
+      alert("登録完了しました！！")
+    })
     .catch(err => console.log(err))
-  }, [username, score])
+  }, [score])
 
-  const handleChange = (setFunc:any) => {
-    const handle = (e:any) => {
-      setFunc(() => e.target.value)
-    }
-    return handle
-  }
+  useEffect(() => {
+    const rate_1 = 1
+    const rate_2 = 1
+    const rate_3 = 1
+    const rate_4 = 1
+    const rate_5 = 1
+    const {
+      facial_expression,
+      attitude,
+      voice_energy,
+      //speaking_speed,
+      voice_stability
+    } = router.query;
 
-  const handleNameChange = (e:any) => {
-    setName(() => e.target.value)
-  }
+    setScore(() => {
+      //  facial_expression * rate_1 + 
+      //  attitude * rate_2 + 
+      //  voice_energy * rate_3 +
+      //  10 * rate_4 + 
+      //  voice_stability * rate_5
+      return String(30)
+    })
+  }, [score]);
 
   return (
     <div>
@@ -53,7 +71,7 @@ const Home: NextPage = () => {
       <main className="score-bg">
       <div className="container-fluid">
         <div className="row">
-          <ScoreNav  />
+          <ScoreNav handleSubmit={handleSubmit} />
         </div>
       </div>
         <div className="container py-5">
@@ -72,13 +90,6 @@ const Home: NextPage = () => {
               <div className="col-5">
                 <Report/>
               </div>
-          </div>
-          <div className="row">
-            <form action="">
-              <input type="text" name="username" id="username" onChange={handleNameChange}/>
-              <input type="text" name="score" id="score" onChange={handleChange(setScore)}/>
-              <button type="button" onClick={handleSubmit}>submit</button>
-            </form>
           </div>
         </div>
       </main>

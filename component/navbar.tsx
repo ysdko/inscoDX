@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Tab from './tab';
 import EnrollQuestionPD from './enrollQuestionPD'
 import RankingPD from './rankingPD';
+import logo from "../public/insco_logo.png";
+import Image from 'next/dist/client/image';
 
 function navber(props:any){
   return(
@@ -14,8 +16,9 @@ function navber(props:any){
 
       <nav className="navbar navbar-expand-sm navbar-light bg-light">
         <div className="container-fluid">
-          <a className="navbar-brand">inscoDX</a>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <Image src={logo} height={40} width={150}></Image>
+          {/* <a className="navbar-brand">inscoDX</a> */}
+          <button className="navbar-toggler btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">

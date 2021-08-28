@@ -9,12 +9,14 @@ import Params from "../component/params";
 import NowTime from "../component/nowTime";
 import Process from "../component/process";
 import NextStep from "../component/nextStep";
-import smile from "../public/smile.png";
-import normal from "../public/normal.png";
-import sad from "../public/sad.png";
-import calm from "../public/calm.jpg";
-import move from "../public/buddha.jpg";
+import great from "../public/great.svg";
+import good from "../public/good.svg";
+import goodAttitude from "../public/goodAttitude.svg";
+import badAttitude from "../public/badAttitude.svg";
+import bad from "../public/bad.svg";
 import TitleText from "../component/title";
+import Point from "../component/point";
+import Voice from "../component/voice";
 import Image from "next/image";
 import { parseJSON } from 'jquery';
 //import { start } from '@popperjs/core';
@@ -74,18 +76,25 @@ function Capture() {
     sad: 0,
     surprised: 0,
   }
+  const point = useRef(0);
   const [scores, updateScores] = useState(initScores);
   const adviceGiveCounter = useRef<number>(0);
-  const faceImage = useRef<StaticImageData>(normal);
+  const faceImage = useRef<object>({value:"init", img:good});
   const setAdvice = (nextScores:any) => {
-    if (nextScores.sad >  0.2)
-      faceImage.current = sad;
-    else if (nextScores.happy > 0.3)
-      faceImage.current = smile;
-    else
-      faceImage.current = normal;
+    if (nextScores.sad >  0.2){
+      faceImage.current = {value:"BAD", img:bad};
+      point.current -= 0.05;
+    }
+    else if (nextScores.happy > 0.3){
+      faceImage.current = {value:"GREAT", img:great};
+      point.current += 0.05;
+    }
+    else{
+      faceImage.current = {value:"GOOD", img:good};
+      point.current += 0.03;
+    }
   
-    if (faceImage.current === sad){
+    if (faceImage.current === {value:"BAD", img:bad}){
       adviceGiveCounter.current += 1;
     }
     else
@@ -99,28 +108,31 @@ function Capture() {
   const moveXCoodinate = useRef<number>(0.0);
   const moveCount = useRef<number>(0);
   const moveRemoveCount = useRef<number>(0);
-  const moveImage = useRef<StaticImageData>(calm);
-  const setMoveImage = (nowCoodinate:number) => {
+  const attitudeImage = useRef<object>({value:"init", img:goodAttitude});
+  const firstResFlag = useRef<boolean>(true);
+  const setAttitudeImage = (nowCoodinate:number) => {
     const threshold = moveXCoodinate.current - nowCoodinate >= 0
     ? moveXCoodinate.current - nowCoodinate : - (moveXCoodinate.current - nowCoodinate);
-    if (threshold > 0.05) {
+    if (threshold > 0.1) {
       moveCount.current += 1;
-      moveRemoveCount.current = 0;
+      if(firstResFlag.current){
+        attitudeImage.current = {value:"GOOD", img:goodAttitude};
+        firstResFlag.current = false;
+      }
+      else
+        attitudeImage.current = {value:"BAD", img:badAttitude};
+        point.current -= 0.08;
     }
     else {
       moveCount.current = 0;
-      moveRemoveCount.current += 1;
+      attitudeImage.current = {value:"GOOD", img:goodAttitude};
+      point.current += 0.05;
     }
 
     if (moveCount.current >= 2) {
-      moveImage.current = move;
       if (moveCount.current % 3 === 0)
-        pushAdvice("ゆらゆらしないで！");
-    }
-    if (moveRemoveCount.current >= 2) {
-        moveCount.current = 0;
-        moveRemoveCount.current = 0;
-        moveImage.current = calm;
+        pushAdvice("ゆらゆらしない！");
+      point.current -= 0.02;
     }
     moveXCoodinate.current = nowCoodinate;
   }
@@ -139,7 +151,7 @@ function Capture() {
       .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()) //SsdMobilenetv1Options
       .withFaceExpressions();
       if (detectionsWithExpressions.length === 1){
-        setMoveImage(detectionsWithExpressions[0].detection.relativeBox.left);
+        setAttitudeImage(detectionsWithExpressions[0].detection.relativeBox.left);
         setAdvice(detectionsWithExpressions[0].expressions);
         console.log(detectionsWithExpressions[0]);
         resultParams.current[0][0] += detectionsWithExpressions[0].expressions.happy;
@@ -167,29 +179,19 @@ function Capture() {
     var chunks : any = [];
     // 録音が終わった後のデータをまとめる
     audioRef.current.addEventListener("dataavailable", (ele : any) => {
-      // console.log("starttt")
       if (ele.data.size > 0) {
         chunks.push(ele.data);
-        console.log("test2")
-        console.log(file)
       }
-      // 音声データをセット
-      setFile(chunks);
-      const test = file;
-      // console.log("test:"+test)
 
       const iconPram = new FormData()
-      // const blob = new Blob(chunks[0])
-      const blob = chunks[0]
-      iconPram.append('file', blob)
+      const blob = new Blob(chunks,  {type: 'video/webm'})
+      const blob_file = new File([blob], "file1.webm", { type: 'video/webm'})
+      iconPram.append('file', blob_file)
       console.log("nakami")
-      chunks = [];
       console.log(blob)
-      
-  
       axios
         .post(
-          'https://inscodx.herokuapp.com/upload',
+          'http://9c9e-115-124-136-81.ngrok.io/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);
@@ -202,15 +204,12 @@ function Capture() {
     audioRef.current.addEventListener("stop", () => {
       setAudioState(true);
       chunks = [];
-      console.log("test!")
-      console.log(file)
     });
   };
 
   // 録音停止
   const handleStop = () => {
     audioRef.current.stop();
-    console.log(file)
   };
 
   const hancleError = () => {
@@ -218,9 +217,15 @@ function Capture() {
   };
 
   const handleStart = () => {
-    
-    audioRef.current.start(3000);
-    console.log("test")
+    setInterval(() => {
+      // audioRef.current.state = "recording"
+      audioRef.current.start();
+      console.log(audioRef.current.state)
+      setTimeout(() => {
+        console.log(audioRef.current.state)
+        audioRef.current.stop();
+      }, 4000);
+    }, 5000);
   }
 
   // ------------------------------------------
@@ -232,22 +237,17 @@ function Capture() {
     faceApiId.current = setInterval(() => {
       faceDetectHandler();
       console.log('実行が完了しました');
-    }, 1500)
+    }, 3000)
   }
 
   useEffect(() => {
-    // // 表情認識の実行？
-    // setInterval(() => {
-    //   faceDetectHandler();
-    //   console.log('実行が完了しました');
-    //   }, 1500)
 
     //音声認識の実行
     //audioのみtrue
     navigator.getUserMedia(
       {
         audio: true,
-        video: true,
+        // video: true,
       },
       handleSuccess,
       hancleError
@@ -286,8 +286,9 @@ function Capture() {
           <div className="col-md-3 col-12">
             <div className="card h-100 border border-5 rounded-3">
               <div className="card-body">
-                <Advice advicesList={advicesList} />
-                <Params faceImage={faceImage.current} shakeImage={moveImage.current} />
+                <Point point={point} />
+                <Params faceImage={faceImage.current} attitudeImage={attitudeImage.current} />
+                <Voice />
               </div>
             </div>
           </div>
@@ -302,8 +303,9 @@ function Capture() {
           <div className="col-md-3 col-12">
             <div className="card h-100 border border-5 rouded-3">
             <div className="card-body">
-              <NowTime />
-              <Process />
+              <NowTime startFlag={startFlag} />
+              <Advice advicesList={advicesList} />
+              <Process nowIndex={nowIndex} questionsList={questionsList} />
               <NextStep setStartFlag={setStartFlag} indexProceed={indexProceed} startFlag={startFlag} endFlag={endFlag} resultParams={resultParams} recordEnd={recordEnd}/>
               </div>
             </div>

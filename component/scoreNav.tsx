@@ -55,7 +55,10 @@ function ScoreNav(props:any){
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li>
-                  <div className="nav-item">スコアの登録</div>
+                  <div 
+                  className="nav-item"
+                  onClick={props.handleSubmit}
+                  >スコアの登録</div>
               </li>
             </ul>
             <li className="d-flex navber-Nav">

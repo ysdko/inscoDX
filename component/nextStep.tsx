@@ -21,14 +21,13 @@ function nowTime(props:any){
         
   return(
     <>
-      <div className="card bg-blue h-25">
-      <div className="card-body">
-      <h5 className="card-title text-center blue"></h5>
-      {props.endFlag
-        ? <Link href={{ pathname: '/posts/score', query: { face: props.resultParams.current[0][0] } }}><button type="button" onClick={setFunc}>{text}</button></Link>
-        : <button type="button" onClick={setFunc}>{text}</button>
-      }
-      </div>
+      <div className="card text-center mt-2">
+        
+          {props.endFlag
+            ? <Link href={ { pathname: '/posts/score', query: { face: props.resultParams.current[0][0] } }}><button type="button" className="btn btn-danger btn-lg btn-block" onClick={setFunc}>{text}</button></Link>
+            : <button type="button" className="btn btn-danger btn-lg btn-block" onClick={setFunc}>{text}</button>
+          }
+        
       </div>
     </>
   )

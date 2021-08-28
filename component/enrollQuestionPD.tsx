@@ -22,7 +22,7 @@ function enrollQuestion(props:any){
               <div className="col-10">
                 <input type="text" ref={refInput} className="form-control" id="exampleFormControlInput1" placeholder="" />
               </div>
-              <button className="col-2" onClick={preAddQuestion}>登録</button>
+              <button className="col-2 btn btn-primary" onClick={preAddQuestion}>登録</button>
             </div>
             <h4 className="my-3">{props.text2}</h4>
             <div className="card card-body mt-2">
