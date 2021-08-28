@@ -5,7 +5,7 @@ function advice(props:any){
   return(
     <>
       <div className="card">
-      <div className="card-body" style={{background: "#777"}}>
+      <div className="card-body">
       <h4 className="card-title text-center">アドバイス欄</h4>
       {/* <ul>
         {props.advicesList.current.map((advice:string, index:number) => <li className="text-center" key={index}>{advice}</li>)}

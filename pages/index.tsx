@@ -86,22 +86,24 @@ function Capture() {
     if (nextScores.sad >  0.2){
       faceImage.current = {value:"BAD", img:bad};
       point.current -= 0.05;
-
+      adviceGiveCounter.current += 1;
     }
     else if (nextScores.happy > 0.3){
       faceImage.current = {value:"GREAT", img:great};
       point.current += 0.05;
+      adviceGiveCounter.current = 0;
     }
     else{
       faceImage.current = {value:"GOOD", img:good};
       point.current += 0.03;
+      adviceGiveCounter.current = 0;
     }
   
-    if (faceImage.current === {value:"BAD", img:bad}){
-      adviceGiveCounter.current += 1;
-    }
-    else
-      adviceGiveCounter.current = 0;
+    // if (faceImage.current === {value:"BAD", img:bad}){
+    //   adviceGiveCounter.current += 1;
+    // }
+    // else
+    //   adviceGiveCounter.current = 0;
   
     if (adviceGiveCounter.current >= 2){
       pushAdvice("もっと笑顔に！");
@@ -283,7 +285,7 @@ function Capture() {
   const advicesList = useRef<Array<string>>([]);
   const pushAdvice = (newAdvice:string) => {
     const tempList = [...advicesList.current, newAdvice];
-    if (tempList.length > 5)
+    if (tempList.length > 3)
       tempList.shift();
     advicesList.current = tempList;
   }
