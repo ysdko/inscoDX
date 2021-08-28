@@ -21,7 +21,7 @@ function nowTime(props:any){
         
   return(
     <>
-      <div className="card text-center mt-2">
+      <div className="card text-center mt-3">
         
           {props.endFlag
             ? <Link href={ { pathname: '/posts/score', query: { face: props.resultParams.current[0][0] } }}><button type="button" className="btn btn-danger btn-lg btn-block" onClick={setFunc}>{text}</button></Link>

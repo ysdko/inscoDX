@@ -281,11 +281,11 @@ function Capture() {
         </div>
       </div>
 
-      <div className="container-fluid mt-3">
+      <div className="container-fluid" style={{background: "#000"}}>
         <div className="row">
           <div className="col-md-3 col-12">
-            <div className="card h-100 border border-5 rounded-3">
-              <div className="card-body">
+            <div className="card border border-5 rounded-3 mt-3 border-danger">
+              <div className="card-body" style={{background: "#777"}}>
                 <Point point={point} />
                 <Params faceImage={faceImage.current} attitudeImage={attitudeImage.current} />
                 <Voice />
@@ -293,7 +293,7 @@ function Capture() {
             </div>
           </div>
           <div className="col-md-6 col-12">
-            <div className="card card-body border border-5 rounded-pill">
+            <div className="card card-body border border-5 rounded-pill mt-3 border-danger">
               <TitleText titleQuestion={titleQuestion} nowIndex={nowIndex} startFlag={startFlag} />
             </div>
             <div className="mt-3">
@@ -301,8 +301,8 @@ function Capture() {
             </div>
           </div>
           <div className="col-md-3 col-12">
-            <div className="card h-100 border border-5 rouded-3">
-            <div className="card-body">
+            <div className="card border border-5 rouded-3 mt-3 border-danger">
+            <div className="card-body" style={{background: "#777"}}>
               <NowTime startFlag={startFlag} />
               <Advice advicesList={advicesList} />
               <Process nowIndex={nowIndex} questionsList={questionsList} />
