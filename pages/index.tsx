@@ -189,7 +189,7 @@ function Capture() {
   
       axios
         .post(
-          'http://localhost:5000/upload',
+          'https://inscodx.herokuapp.com/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);

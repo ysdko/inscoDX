@@ -5,8 +5,43 @@ import Chart from "../../component/chart";
 import Discribe from '../../component/discribe';
 import Report from '../../component/report';
 import background from "background.gif"
+import { useCallback, useState } from 'react'; 
+import ScoreNav from '../../component/scoreNav';
 
 const Home: NextPage = () => {
+  const [username, setName] = useState("")
+  const [score, setScore] = useState("")
+
+  const handleSubmit = useCallback(() => {
+    const url = "https://inscodx.herokuapp.com/score"
+    const config = {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username,
+        score
+      })
+    }
+    fetch(url, config)
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  }, [username, score])
+
+  const handleChange = (setFunc:any) => {
+    const handle = (e:any) => {
+      setFunc(() => e.target.value)
+    }
+    return handle
+  }
+
+  const handleNameChange = (e:any) => {
+    setName(() => e.target.value)
+  }
+
   return (
     <div>
       <Head>
@@ -16,24 +51,36 @@ const Home: NextPage = () => {
       </Head>
 
       <main className="score-bg">
-      <div className="container py-5">
-        <div className="row justify-content-center">
-          <div className="col-5">
-            <Score/>
-          </div>
-          <div className="col-5">
-            <Chart/>
-          </div>
-        </div>
-          <div className="row justify-content-center mt-2">
-            <div className="col-5">
-              <Discribe/>
-            </div>
-            <div className="col-5">
-              <Report/>
-            </div>
+      <div className="container-fluid">
+        <div className="row">
+          <ScoreNav  />
         </div>
       </div>
+        <div className="container py-5">
+          <div className="row justify-content-center">
+            <div className="col-5">
+              <Score/>
+            </div>
+            <div className="col-5">
+              <Chart/>
+            </div>
+          </div>
+            <div className="row justify-content-center mt-2">
+              <div className="col-5">
+                <Discribe/>
+              </div>
+              <div className="col-5">
+                <Report/>
+              </div>
+          </div>
+          <div className="row">
+            <form action="">
+              <input type="text" name="username" id="username" onChange={handleNameChange}/>
+              <input type="text" name="score" id="score" onChange={handleChange(setScore)}/>
+              <button type="button" onClick={handleSubmit}>submit</button>
+            </form>
+          </div>
+        </div>
       </main>
     </div>
   )
