@@ -40,7 +40,7 @@ const options = {
 //   },
 };
 
-const Score = () => {
+const Score = (props:any) => {
     return (
         <div className="card box box-upper">
             <div className="card-header score-header text-end">
@@ -52,7 +52,7 @@ const Score = () => {
                 </div>
             </div>
             <div className="card-body score-main box-score-main">
-                <p>95.267<span className="score-char">点</span></p>
+                <p>{props.score}<span className="score-char">点</span></p>
             </div>
             <div className="card-footer text-end">
                 <div>

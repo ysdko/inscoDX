@@ -9,10 +9,23 @@ import { useCallback, useState, useEffect } from 'react';
 import ScoreNav from '../../component/scoreNav';
 import { useRouter } from "next/router"
 
+const vc = (value:number | string) => {
+  switch(typeof(value)){
+    case("string"):
+      return 0
+
+    case("undefined"):
+      return 0
+      
+    default:
+      return value
+  }
+}
+
 const Home: NextPage = () => {
   const router = useRouter()
   const [username, setName] = useState("")
-  const [score, setScore] = useState("")
+  const [score, setScore] = useState("72")
 
   const handleSubmit = useCallback(() => {
     let username = prompt("名前を記入してください")
@@ -49,6 +62,7 @@ const Home: NextPage = () => {
       //speaking_speed,
       voice_stability
     } = router.query;
+    console.log(vc(facial_expression))
 
     setScore(() => {
       //  facial_expression * rate_1 + 
@@ -56,7 +70,7 @@ const Home: NextPage = () => {
       //  voice_energy * rate_3 +
       //  10 * rate_4 + 
       //  voice_stability * rate_5
-      return String(30)
+      return String(72.393)
     })
   }, [score]);
 
@@ -77,10 +91,10 @@ const Home: NextPage = () => {
         <div className="container py-5">
           <div className="row justify-content-center">
             <div className="col-5">
-              <Score/>
+              <Score score={score}/>
             </div>
             <div className="col-5">
-              <Chart/>
+              <Chart query={router.query}/>
             </div>
           </div>
             <div className="row justify-content-center mt-2">

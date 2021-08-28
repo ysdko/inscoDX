@@ -3,13 +3,13 @@ import  {Radar}  from "react-chartjs-2";
 import { useRouter } from "next/router"
 
 
-const Chart = () => {
+const Chart = (props:any) => {
   const router = useRouter()
   const {
     facial_expression,
     attitude,
     voice_energy,
-    //speaking_speed,
+    speaking_speed,
     voice_stability
   } = router.query;
     const RadarData = {
@@ -27,7 +27,7 @@ const Chart = () => {
               facial_expression,
               attitude,
               voice_energy,
-              3,//speaking_speed,
+              speaking_speed,
               voice_stability
             ]
           }
