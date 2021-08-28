@@ -25,8 +25,8 @@ const Chart = (props:any) => {
             pointHoverBackgroundColor: "#000",
             pointHoverBorderColor: "rgba(34, 202, 236, 1)",
             data: [
-              facial_expression,
-              attitude,
+              facial_expression * 30,
+              attitude * 30,
               voice_energy,
               speaking_speed,
               voice_stability

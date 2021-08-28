@@ -49,6 +49,8 @@ const Home: NextPage = () => {
     .catch(err => console.log(err))
   }, [score])
 
+  const mathFunc = (v:number, n:number) => Math.floor(v * Math.pow(10, n)) / Math.pow(10, n);
+
   useEffect(() => {
     const rate_1 = 20;
     const rate_2 = 20;
@@ -66,11 +68,11 @@ const Home: NextPage = () => {
 
     setScore(() => {
       return String(
-        facial_expression * rate_1 +
+        mathFunc(facial_expression * rate_1 +
         attitude          * rate_2 + 
         voice_energy      * rate_3 +
         speaking_speed    * rate_4 + 
-        voice_stability   * rate_5
+        voice_stability   * rate_5, 3)
       )
     })
   }, [score]);

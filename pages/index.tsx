@@ -83,7 +83,7 @@ function Capture() {
   const adviceGiveCounter = useRef<number>(0);
   const faceImage = useRef<object>({value:"init", img:good});
   const setAdvice = (nextScores:any) => {
-    if (nextScores.sad >  0.2){
+    if (nextScores.sad >  0.3){
       faceImage.current = {value:"BAD", img:bad};
       point.current -= 0.05;
       adviceGiveCounter.current += 1;
@@ -204,7 +204,7 @@ function Capture() {
       console.log(blob)
       axios
         .post(
-          'http://7c94-115-124-136-81.ngrok.io/upload',
+          'http://dbb8-115-124-136-81.ngrok.io/upload',
           iconPram,
         ).then((response)=>{
           console.log(response.data);
@@ -238,8 +238,10 @@ function Capture() {
     alert("エラーです。");
   };
 
+  let aaaID:any;
+
   const handleStart = () => {
-    setInterval(() => {
+    aaaID = setInterval(() => {
       // audioRef.current.state = "recording"
       audioRef.current.start();
       console.log(audioRef.current.state)
@@ -279,6 +281,7 @@ function Capture() {
   const recordEnd = () => {
     handleStop();
     clearInterval(faceApiId.current);
+    clearInterval(aaaID);
   }
   
   //　アドバイス関連
