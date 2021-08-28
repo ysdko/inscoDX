@@ -5,13 +5,14 @@ import { useRouter } from "next/router"
 
 const Chart = (props:any) => {
   const router = useRouter()
-  const {
+  const [
     facial_expression,
     attitude,
     voice_energy,
     speaking_speed,
     voice_stability
-  } = router.query;
+  ] = Object.values(router.query);
+  console.log(Object.values(router.query))
     const RadarData = {
         labels: ["facial_expression", "attitude", "voice_energy", "speaking_speed", "voice_stability"],
         datasets: [

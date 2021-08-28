@@ -7,9 +7,9 @@ const Report = () => {
                 <p className="text-underline">分析レポート</p>
             </div>
             <div className="card-body text-center">
-                <p>並外れた歌唱力ですね。</p>
-                <p>音程のズレも</p>
-                <p>ほとんどありません。</p>
+                <p>すばらしい笑顔です</p>
+                <p>声量が少し低いので</p>
+                <p>腹の底から声を出しましょう</p>
             </div>
         </div>
     )

@@ -55,21 +55,23 @@ const Home: NextPage = () => {
     const rate_3 = 2/5;
     const rate_4 = 2/5;
     const rate_5 = 2/5;
-    const {
+
+    const [
       facial_expression,
       attitude,
       voice_energy,
-      //speaking_speed,
+      speaking_speed,
       voice_stability
-    } = router.query;
-    console.log(vc(facial_expression))
+    ] = Object.values(router.query)
 
     setScore(() => {
-      return String(facial_expression * rate_1 + 
-        attitude * rate_2 + 
-       voice_energy * rate_3 +
-       10 * rate_4 + 
-       voice_stability * rate_5)
+      return String(
+        facial_expression * rate_1 +
+        attitude          * rate_2 + 
+        voice_energy      * rate_3 +
+        speaking_speed    * rate_4 + 
+        voice_stability   * rate_5
+      )
     })
   }, [score]);
 
